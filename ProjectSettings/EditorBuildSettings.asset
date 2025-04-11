@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/SampleScene.unity
+    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Menu/Menu.unity
+    guid: 94c0a04678d151440848e9e9a6ea8fa9
+  - enabled: 1
+    path: Assets/TUTOINSANEEE/TUTOINSANE.unity
+    guid: c2d7e3b10a115544a87fc1dcefa3377c
+  - enabled: 1
+    path: Assets/Scenes/Levels/Tutorial.unity
+    guid: cea769cbadbf5a3488c0e6aba484ad58
+  - enabled: 1
+    path: Assets/Scenes/Levels/Nachito.unity
+    guid: d1071413db0bbdf44a13f2adcdc16485
+  - enabled: 1
+    path: Assets/Scenes/Levels/Burito.unity
+    guid: b1417d62d4013a34fa7c8d88d917a56a
+  - enabled: 1
+    path: Assets/Scenes/Levels/P.Escao.unity
+    guid: fd1eddd9fa6e00840a380cc0f6627922
+  - enabled: 1
+    path: Assets/Scenes/Levels/Taco_supreme.unity
+    guid: e29ab8e3191e1f4439f8b564ad5db6f9
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_UseUCBPForAssetBundles: 0
