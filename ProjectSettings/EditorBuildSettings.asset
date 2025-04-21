@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Levels/Tutorial.unity
     guid: cea769cbadbf5a3488c0e6aba484ad58
   - enabled: 1
+    path: Assets/Scenes/Levels/SelectPlayer.unity
+    guid: 4d32c374a6d7c7b48b4cbc5b67632c99
+  - enabled: 1
     path: Assets/Scenes/Levels/Nachito.unity
     guid: d1071413db0bbdf44a13f2adcdc16485
   - enabled: 1
@@ -29,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/Taco_supreme.unity
     guid: e29ab8e3191e1f4439f8b564ad5db6f9
+  - enabled: 1
+    path: Assets/Scenes/Levels/Creditos.unity
+    guid: 4574edc442362f6438ab7066ed2a7fdd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
