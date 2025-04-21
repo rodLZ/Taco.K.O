@@ -959,7 +959,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a540207793d27b4428fe8301a8e88e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextLevelToUnlock: 1
+  nextLevelToUnlock: 2
 --- !u!1 &405298833
 GameObject:
   m_ObjectHideFlags: 0
