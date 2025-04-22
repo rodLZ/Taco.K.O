@@ -216,17 +216,29 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator HandleDeathSequence()
     {
+        // 1) Si está el panelNegro activo, lo oculto rápido
         if (panelNegro != null && panelNegro.alpha > 0f)
             yield return FadeCanvas(panelNegro, 0f, 0.3f);
 
+        // 2) Disparo la animación de muerte
         animator.SetTrigger("Death");
-        yield return new WaitForSeconds(1f);
 
+        // 3) Espero a que el Animator esté en el estado "Death"
+        yield return new WaitUntil(() =>
+            animator.GetCurrentAnimatorStateInfo(0).IsName("Death"));
+
+        // 4) Y luego espero exactamente su duración
+        float deathLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(deathLength);
+
+        // 5) Ahora muestro la pantalla de victoria
         if (victoryCanvas != null)
             yield return FadeCanvas(victoryCanvas, 1f, 0.3f);
 
+        // 6) Destruyo al enemigo al final
         Destroy(gameObject);
     }
+
 
     private IEnumerator FadeCanvas(CanvasGroup cg, float targetAlpha, float duration)
     {

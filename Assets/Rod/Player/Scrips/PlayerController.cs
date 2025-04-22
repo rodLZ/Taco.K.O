@@ -58,6 +58,8 @@ public class PlayerController : MonoBehaviour
 
     public bool IsDead => isDead;
 
+    private bool isSpecialActive = false;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -97,16 +99,26 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(specialKey))
         {
             isSpecialActive = true;
+<<<<<<< Updated upstream
             StartCoroutine(FadeCanvas(abilityPanel, 1f, 0.3f));
             abilityPanel.blocksRaycasts = true;
             abilityPanel.interactable = true;
+=======
+            StartCoroutine(FadeCanvas(panelNegro, 1f, 0.3f));
+            panelNegro.blocksRaycasts = true;
+>>>>>>> Stashed changes
         }
         else if (Input.GetKeyUp(specialKey))
         {
             isSpecialActive = false;
+<<<<<<< Updated upstream
             StartCoroutine(FadeCanvas(abilityPanel, 0f, 0.3f));
             abilityPanel.blocksRaycasts = false;
             abilityPanel.interactable = false;
+=======
+            StartCoroutine(FadeCanvas(panelNegro, 0f, 0.3f));
+            panelNegro.blocksRaycasts = false;
+>>>>>>> Stashed changes
         }
     }
 
@@ -153,6 +165,7 @@ public class PlayerController : MonoBehaviour
         animator.speed = 1.5f;
         animator.SetTrigger(triggerName);
 
+<<<<<<< Updated upstream
         // Calcula daño final (aquí podrías aplicar combo)
         int finalDamage = attackDamage;
 
@@ -163,13 +176,36 @@ public class PlayerController : MonoBehaviour
         if (canDamage)
         {
             enemy.TakeDamage(finalDamage, dir);
+=======
+        // calcula finalDamage y duración como antes…
+        int finalDamage = attackDamage;
+        // … lógica de combo que actualiza finalDamage …
+
+        yield return new WaitForSeconds(attackImpactDelay);
+
+        bool inRange = enemy != null
+                       && Vector3.Distance(transform.position, enemy.transform.position) <= attackRange;
+        bool specialOn = panelNegro != null && panelNegro.alpha > 0.1f;
+        // —> o directamente: bool specialOn = isSpecialActive;
+
+        if (inRange && specialOn)
+        {
+            // Aplicas daño **una sola vez**, ya con el posible bono de combo
+            enemy.TakeDamage(finalDamage, direction);
+>>>>>>> Stashed changes
             ShowRandomImpactSprite();
             audioGolpe?.Play();
         }
 
+<<<<<<< Updated upstream
         // Espera fin de animación ajustada por combo
         float effectiveDuration = baseAttackDuration;
         yield return new WaitForSeconds(effectiveDuration - attackImpactDelay);
+=======
+        // Espera el resto de la animación
+        yield return new WaitForSeconds((baseAttackDuration /*ajustado por combo*/)
+                                       - attackImpactDelay);
+>>>>>>> Stashed changes
 
         animator.speed = 1f;
         isAttacking = false;
@@ -202,8 +238,18 @@ public class PlayerController : MonoBehaviour
 
         currentHealth = Mathf.Clamp(currentHealth - damage, 0f, maxHealth);
         UpdateHealthUI();
+<<<<<<< Updated upstream
         animator.SetTrigger("Player_D");
         StartCoroutine(DamageFeedback());
+=======
+
+        if (panelNegro != null && panelNegro.alpha > 0.1f)
+            StartCoroutine(ShowDamageCanvas(true));
+        else
+            StartCoroutine(ShowDamageCanvas(false));
+        Debug.Log($"TakeDamage invoked. Health now={currentHealth}. Setting Player_D trigger.");
+        animator.SetTrigger("Player_D");
+>>>>>>> Stashed changes
 
         if (currentHealth <= 0) Die();
     }

@@ -6232,8 +6232,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.70609474, z: 0.6142316}
-  m_Center: {x: 0, y: 0.2945757, z: -0.006695509}
+  m_Size: {x: 1, y: 0.70609474, z: 0.62981033}
+  m_Center: {x: 0, y: 0.2945757, z: 0.0010938644}
 --- !u!54 &2120351524
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6295,9 +6295,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ca874d8139af43bbf4abc3b952238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
   attackDamage: 34
   attackRange: 5
   defenseBypassChance: 5
+=======
+  attackDamage: 30
+  attackRange: 5
+  defenseBypassChance: 0
+>>>>>>> Stashed changes
   maxHealth: 500
   defenseDamageReduction: 0
   attackConfig:
@@ -6386,10 +6392,10 @@ MonoBehaviour:
   defendRightKey: 275
   baseAttackDuration: 0.8
   attackImpactDelay: 0.05
-  attackDamage: 10
+  attackDamage: 5
   attackRange: 1.5
   maxHealth: 100
-  initialInvulnerabilityDuration: 3
+  initialInvulnerabilityDuration: 1
   comboResetTime: 1
   comboSpeedFactor: 1
   minAttackDuration: 0.4
@@ -6449,8 +6455,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.8677239, y: 0.7940757, z: 0.8352223}
-  m_Center: {x: 0.036384795, y: 0.42616487, z: 0.28565153}
+  m_Size: {x: 0.8677239, y: 0.7940757, z: 0.8882625}
+  m_Center: {x: 0.0363848, y: 0.42616487, z: 0.31217188}
 --- !u!1 &2145790243
 GameObject:
   m_ObjectHideFlags: 0
