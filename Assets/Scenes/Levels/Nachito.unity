@@ -1015,7 +1015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a540207793d27b4428fe8301a8e88e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextLevelToUnlock: 2
+  nextLevelToUnlock: 3
 --- !u!1 &405298833
 GameObject:
   m_ObjectHideFlags: 0
@@ -3679,7 +3679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDamage: 10
-  attackRange: 2
+  attackRange: 5
   defenseBypassChance: 5
   maxHealth: 200
   defenseDamageReduction: 4

@@ -2144,7 +2144,7 @@ MonoBehaviour:
   - Burito
   - P.Escao
   - Taco_supremo
-  requiredLevels: 01000000010000000100000001000000
+  requiredLevels: 02000000030000000400000005000000
   rotationStep: 90
   rotationSpeed: 5
 --- !u!4 &2049233123
