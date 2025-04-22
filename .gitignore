@@ -31,3 +31,5 @@ sysinfo.txt
 *.apk
 *.aab
 *.unitypackage
+UserSettings/EditorUserSettings.asset
+UserSettings/EditorUserSettings.asset
