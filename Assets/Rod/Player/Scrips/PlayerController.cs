@@ -1,3 +1,4 @@
+// PlayerController.cs
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 public class PlayerController : MonoBehaviour
 {
     public enum DefenseDirection { None, Left, Right }
+    public DefenseDirection CurrentDefenseDirection { get; private set; } = DefenseDirection.None;
 
     [Header("Key Bindings")]
     public KeyCode specialKey = KeyCode.Space;
@@ -22,7 +24,6 @@ public class PlayerController : MonoBehaviour
     public float maxHealth = 100f;
 
     [Header("Invulnerability")]
-    [Tooltip("Time (seconds) at start of combat during which player is immune")]
     public float initialInvulnerabilityDuration = 5f;
     private float combatStartTime;
 
@@ -61,29 +62,15 @@ public class PlayerController : MonoBehaviour
         UpdateHealthUI();
 
         combatStartTime = Time.time;
-
-        if (panelNegro != null)
-        {
-            panelNegro.alpha = 0f;
-            panelNegro.interactable = false;
-            panelNegro.blocksRaycasts = false;
-        }
-
-        if (damageCanvas != null)
-        {
-            damageCanvas.alpha = 0f;
-            damageCanvas.interactable = false;
-            damageCanvas.blocksRaycasts = false;
-        }
-
-        foreach (var img in impactSprites)
-            img.gameObject.SetActive(false);
+        // Ocultar UIs iniciales
+        if (panelNegro != null) { panelNegro.alpha = 0f; panelNegro.blocksRaycasts = false; panelNegro.interactable = false; }
+        if (damageCanvas != null) { damageCanvas.alpha = 0f; damageCanvas.blocksRaycasts = false; damageCanvas.interactable = false; }
+        foreach (var img in impactSprites) img.gameObject.SetActive(false);
     }
 
     void Update()
     {
         if (isDead) return;
-
         HandleAbilityInput();
         HandleAttackInput();
         HandleDefenseInput();
@@ -93,12 +80,12 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(specialKey))
         {
-            StartCoroutine(FadeCanvas(panelNegro, 1f, 0.3f)); // Mostrar con animación
+            StartCoroutine(FadeCanvas(panelNegro, 1f, 0.3f));
             panelNegro.blocksRaycasts = true;
         }
         else if (Input.GetKeyUp(specialKey))
         {
-            StartCoroutine(FadeCanvas(panelNegro, 0f, 0.3f)); // Ocultar con animación
+            StartCoroutine(FadeCanvas(panelNegro, 0f, 0.3f));
             panelNegro.blocksRaycasts = false;
         }
     }
@@ -106,7 +93,6 @@ public class PlayerController : MonoBehaviour
     void HandleAttackInput()
     {
         if (isAttacking) return;
-
         if (Input.GetKeyDown(attackLeftKey))
         {
             ProcessCombo(DefenseDirection.Left);
@@ -122,13 +108,9 @@ public class PlayerController : MonoBehaviour
     void ProcessCombo(DefenseDirection currentDirection)
     {
         if (Time.time - lastAttackTime > comboResetTime || currentDirection == lastAttackDirection)
-        {
             comboCount = 1;
-        }
         else
-        {
             comboCount++;
-        }
 
         lastAttackTime = Time.time;
         lastAttackDirection = currentDirection;
@@ -154,14 +136,13 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(attackImpactDelay);
 
-        if (enemy && Vector3.Distance(transform.position, enemy.transform.position) <= attackRange)
+        if (enemy != null && Vector3.Distance(transform.position, enemy.transform.position) <= attackRange)
         {
-            if (panelNegro.alpha > 0.1f)
+            if (panelNegro != null && panelNegro.alpha > 0.1f)
             {
                 enemy.TakeDamage(attackDamage, direction);
                 ShowRandomImpactSprite();
-                if (audioGolpe != null)
-                    audioGolpe.Play();
+                audioGolpe?.Play();
             }
         }
 
@@ -173,126 +154,87 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PerformDefense(string triggerName, DefenseDirection direction)
     {
+        CurrentDefenseDirection = direction;
         animator.SetTrigger(triggerName);
         yield return null;
+        // Esperar duración de la animación
+        var state = animator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(state.length);
+        CurrentDefenseDirection = DefenseDirection.None;
     }
 
     public void TakeDamage(int damage, DefenseDirection attackDirection)
     {
-        // Invulnerable al inicio de combate
-        if (Time.time - combatStartTime < initialInvulnerabilityDuration)
-            return;
-
+        if (Time.time - combatStartTime < initialInvulnerabilityDuration) return;
         if (isDead) return;
+        if (attackDirection == lastAttackDirection) return; // Perfect block
 
-        if (attackDirection == lastAttackDirection)
-        {
-            Debug.Log("Perfect block!");
-            return;
-        }
-
-        currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
+        currentHealth = Mathf.Clamp(currentHealth - damage, 0f, maxHealth);
         UpdateHealthUI();
 
-        if (panelNegro.alpha > 0.1f)
+        if (panelNegro != null && panelNegro.alpha > 0.1f)
             StartCoroutine(ShowDamageCanvas(true));
-
-        if (currentHealth <= 0)
-            Die();
         else
-            animator.SetTrigger("Player_D");
+            StartCoroutine(ShowDamageCanvas(false));
+
+        if (currentHealth <= 0) Die();
+        else animator.SetTrigger("Player_D");
     }
 
-    IEnumerator ShowDamageCanvas(bool fade = false)
+    IEnumerator ShowDamageCanvas(bool fade)
     {
         if (fade)
             yield return StartCoroutine(FadeCanvas(damageCanvas, 1f, 0.2f));
         else
-            damageCanvas.alpha = 1;
+            damageCanvas.alpha = 1f;
 
         yield return new WaitForSeconds(1.5f);
 
         if (fade)
             yield return StartCoroutine(FadeCanvas(damageCanvas, 0f, 0.3f));
         else
-            damageCanvas.alpha = 0;
+            damageCanvas.alpha = 0f;
     }
 
     void ShowRandomImpactSprite()
     {
         if (impactSprites.Length == 0) return;
-
-        // Si ya salieron todos, reiniciamos la lista
-        if (usedSpriteIndices.Count >= impactSprites.Length)
-            usedSpriteIndices.Clear();
-
+        if (usedSpriteIndices.Count >= impactSprites.Length) usedSpriteIndices.Clear();
         int index;
-        do
-        {
-            index = Random.Range(0, impactSprites.Length);
-        } while (usedSpriteIndices.Contains(index));
-
+        do { index = Random.Range(0, impactSprites.Length); }
+        while (usedSpriteIndices.Contains(index));
         usedSpriteIndices.Add(index);
 
-        if (currentSprite != null)
-            currentSprite.gameObject.SetActive(false);
-
+        currentSprite?.gameObject.SetActive(false);
         currentSprite = impactSprites[index];
         currentSprite.gameObject.SetActive(true);
-
         StartCoroutine(HideSpriteAfterDelay(currentSprite, 1f));
     }
 
     IEnumerator HideSpriteAfterDelay(Image sprite, float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (sprite != null)
-            sprite.gameObject.SetActive(false);
+        sprite?.gameObject.SetActive(false);
     }
 
     void Die()
     {
         isDead = true;
         animator.SetTrigger("Player_Death");
-        panelNegro.alpha = 0;
-        panelNegro.blocksRaycasts = false;
+        if (panelNegro != null) { panelNegro.alpha = 0f; panelNegro.blocksRaycasts = false; panelNegro.interactable = false; }
     }
 
     void UpdateHealthUI()
     {
-        if (healthBar)
-            healthBar.fillAmount = currentHealth / maxHealth;
+        if (healthBar != null) healthBar.fillAmount = currentHealth / maxHealth;
     }
 
-    public void ResetPlayer()
-    {
-        StopAllCoroutines();
-        animator.Rebind();
-        animator.Update(0f);
-
-        currentHealth = maxHealth;
-        isDead = false;
-        isAttacking = false;
-        comboCount = 0;
-        lastAttackTime = -10f;
-        lastAttackDirection = DefenseDirection.None;
-
-        UpdateHealthUI();
-    }
     IEnumerator FadeCanvas(CanvasGroup cg, float targetAlpha, float duration)
     {
         if (cg == null) yield break;
-
-        float startAlpha = cg.alpha;
-        float elapsed = 0f;
-
-        // Si vamos a mostrar el panel, habilitamos raycasts desde ya
+        float startAlpha = cg.alpha, elapsed = 0f;
         bool willShow = targetAlpha > startAlpha;
-        if (willShow)
-        {
-            cg.blocksRaycasts = true;
-            cg.interactable = true;
-        }
+        if (willShow) { cg.blocksRaycasts = true; cg.interactable = true; }
 
         while (elapsed < duration)
         {
@@ -302,14 +244,6 @@ public class PlayerController : MonoBehaviour
         }
 
         cg.alpha = targetAlpha;
-
-        // Si lo hemos ocultado, deshabilitamos raycasts
-        if (!willShow)
-        {
-            cg.blocksRaycasts = false;
-            cg.interactable = false;
-        }
+        if (!willShow) { cg.blocksRaycasts = false; cg.interactable = false; }
     }
-
-
 }
