@@ -258,5 +258,12 @@ public class EnemyAI : MonoBehaviour
             AttemptAttack(dir);
         }
     }
+    public void OnEnemyAttackEvent(string attackSide)
+    {
+        // flip Left <-> Right
+        string flippedSide = (attackSide == "Left") ? "Right" : "Left";
 
+        if (player != null)
+            player.OnEnemyAttackEvent(flippedSide);
+    }
 }

@@ -1,4 +1,4 @@
-// PlayerController.cs
+﻿// PlayerController.cs
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour
     private bool isAttacking = false;
     private bool isDead = false;
     private EnemyAI enemy;
+    private bool isDefendingEvent = false;
+    private DefenseDirection defendingEventDir = DefenseDirection.None;
     public bool IsDead => isDead;
 
     private int comboCount = 0;
@@ -54,6 +56,10 @@ public class PlayerController : MonoBehaviour
 
     private List<int> usedSpriteIndices = new List<int>();
     private Image currentSprite;
+
+    public Image[] fireComboSprites; // Asigna los 4 sprites en el Inspector
+    private List<DefenseDirection> fullCombo = new List<DefenseDirection>();
+    private int fireComboIndex = 0;
 
     void Start()
     {
@@ -107,14 +113,30 @@ public class PlayerController : MonoBehaviour
 
     void ProcessCombo(DefenseDirection currentDirection)
     {
-        if (Time.time - lastAttackTime > comboResetTime || currentDirection == lastAttackDirection)
+        if (Time.time - lastAttackTime > comboResetTime)
+        {
             comboCount = 1;
+            fullCombo.Clear();
+            fireComboIndex = 0;
+        }
         else
+        {
             comboCount++;
+        }
 
         lastAttackTime = Time.time;
         lastAttackDirection = currentDirection;
+        fullCombo.Add(currentDirection);
+
+        // Mostrar sprite de fuego
+        if (fireComboIndex < fireComboSprites.Length)
+        {
+            fireComboSprites[fireComboIndex].gameObject.SetActive(true);
+            StartCoroutine(HideSpriteAfterDelay(fireComboSprites[fireComboIndex], 1f));
+            fireComboIndex++;
+        }
     }
+
 
     void HandleDefenseInput()
     {
@@ -129,6 +151,7 @@ public class PlayerController : MonoBehaviour
         isAttacking = true;
         animator.speed = 1.5f;
         animator.SetTrigger(triggerName);
+        int finalDamage = attackDamage;
 
         float speedMultiplier = 1f - (comboCount - 1) * comboSpeedFactor;
         speedMultiplier = Mathf.Clamp(speedMultiplier, minAttackDuration / baseAttackDuration, 1f);
@@ -145,6 +168,23 @@ public class PlayerController : MonoBehaviour
                 audioGolpe?.Play();
             }
         }
+        if (fullCombo.Count == 4 &&
+    fullCombo[0] == DefenseDirection.Left &&
+    fullCombo[1] == DefenseDirection.Right &&
+    fullCombo[2] == DefenseDirection.Left &&
+    fullCombo[3] == DefenseDirection.Right)
+        {
+            finalDamage *= 2; // O el número que desees para el golpe final
+            fullCombo.Clear(); // Reiniciamos combo después del ataque final
+            fireComboIndex = 0;
+            // Puedes desactivar todos los sprites también aquí si quieres
+            foreach (var sprite in fireComboSprites) sprite.gameObject.SetActive(false);
+        }
+
+        enemy.TakeDamage(finalDamage, direction);
+        ShowRandomImpactSprite();
+        audioGolpe?.Play();
+
 
         yield return new WaitForSeconds(effectiveAttackDuration - attackImpactDelay);
 
@@ -156,10 +196,13 @@ public class PlayerController : MonoBehaviour
     {
         CurrentDefenseDirection = direction;
         animator.SetTrigger(triggerName);
-        yield return null;
-        // Esperar duraci�n de la animaci�n
-        var state = animator.GetCurrentAnimatorStateInfo(0);
-        yield return new WaitForSeconds(state.length);
+
+        // Esperar hasta que la animación actual sea la de defensa
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsTag("Defense"));
+
+        float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animLength);
+
         CurrentDefenseDirection = DefenseDirection.None;
     }
 
@@ -245,5 +288,59 @@ public class PlayerController : MonoBehaviour
 
         cg.alpha = targetAlpha;
         if (!willShow) { cg.blocksRaycasts = false; cg.interactable = false; }
+    }
+    // Llamados desde tu animación "defensa izquierda"
+    public void DefensaIzquierdaInicio()
+    {
+        isDefendingEvent = true;
+        defendingEventDir = DefenseDirection.Left;
+        Debug.Log(">> Defensa IZQUIERDA: inicio");
+    }
+
+    public void DefensaIzquierdaFinal()
+    {
+        isDefendingEvent = false;
+        defendingEventDir = DefenseDirection.None;
+        Debug.Log(">> Defensa IZQUIERDA: final");
+    }
+
+    // (Repite para defensa derecha si la tienes en otra animación)
+    public void DefensaDerechaInicio()
+    {
+        isDefendingEvent = true;
+        defendingEventDir = DefenseDirection.Right;
+        Debug.Log(">> Defensa DERECHA: inicio");
+    }
+
+    public void DefensaDerechaFinal()
+    {
+        isDefendingEvent = false;
+        defendingEventDir = DefenseDirection.None;
+        Debug.Log(">> Defensa DERECHA: final");
+    }
+    public void OnEnemyAttackEvent(string attackSide)
+    {
+        // Convertir a tu enum
+        DefenseDirection attackDir = (attackSide == "Left")
+    ? DefenseDirection.Right
+    : DefenseDirection.Left;
+
+        if (isDefendingEvent)
+        {
+            if (defendingEventDir == attackDir)
+            {
+                Debug.Log("✅ El player se defendió del lado CORRECTO");
+                return; // bloquea el daño
+            }
+            else
+            {
+                Debug.Log("⚠️ El player se defendió del lado INCORRECTO");
+                // aquí podrías aplicar penalización o permitir algo de daño
+            }
+        }
+
+        Debug.Log("❌ El player NO se defendió y recibió el golpe");
+        // Si quieres que luego se aplique tu TakeDamage normal, puedes llamarlo:
+        //
     }
 }
