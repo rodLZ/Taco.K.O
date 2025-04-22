@@ -937,7 +937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &399084349
 Transform:
   m_ObjectHideFlags: 0
@@ -3163,6 +3163,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 212357227}
     m_Modifications:
+    - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a932235687dbf374bae4183f6ca2c7bd, type: 2}
     - target: {fileID: -8679921383154817045, guid: 761923812b5706948be57a46e673f377, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.818
@@ -3211,10 +3215,6 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 9279b965a5c0e934b9b51b1dc488441b, type: 2}
-    - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: a932235687dbf374bae4183f6ca2c7bd, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6682,6 +6682,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 212357227}
     m_Modifications:
+    - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a361223432df60a44a9e9c7b41e467a1, type: 2}
     - target: {fileID: -8679921383154817045, guid: 761923812b5706948be57a46e673f377, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.3536
@@ -6739,10 +6743,6 @@ PrefabInstance:
       value: Pescao_Lente
       objectReference: {fileID: 0}
     - target: {fileID: 6901897104979279846, guid: 761923812b5706948be57a46e673f377, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: a361223432df60a44a9e9c7b41e467a1, type: 2}
-    - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a361223432df60a44a9e9c7b41e467a1, type: 2}
@@ -7123,6 +7123,7 @@ MonoBehaviour:
   - {fileID: 698718936}
   - {fileID: 1719720199}
   audioGolpe: {fileID: 1224539460}
+  fireComboSprites: []
 --- !u!54 &2138881399
 Rigidbody:
   m_ObjectHideFlags: 0
