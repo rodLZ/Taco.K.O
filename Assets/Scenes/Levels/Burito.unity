@@ -3359,7 +3359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDamage: 15
-  attackRange: 2
+  attackRange: 5
   defenseBypassChance: 5
   maxHealth: 350
   defenseDamageReduction: 0.2
@@ -7429,8 +7429,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.74009454, y: 0.85149825, z: 0.2735886}
-  m_Center: {x: 0.020735152, y: 0.45487612, z: 0.014267345}
+  m_Size: {x: 0.74009454, y: 0.883258, z: 0.35748094}
+  m_Center: {x: 0.020735152, y: 0.470756, z: 0.05621359}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

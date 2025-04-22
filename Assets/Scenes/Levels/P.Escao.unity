@@ -558,7 +558,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDamage: 25
-  attackRange: 2
+  attackRange: 5
   defenseBypassChance: 8
   maxHealth: 300
   defenseDamageReduction: 0.1

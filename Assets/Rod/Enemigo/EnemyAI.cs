@@ -247,23 +247,19 @@ public class EnemyAI : MonoBehaviour
     }
     public void DealDamageFromAnimation()
     {
-        PlayerController.DefenseDirection dir = (currentState == State.AttackingLeft) ?
-                                                 PlayerController.DefenseDirection.Left :
-                                                 PlayerController.DefenseDirection.Right;
+        // Determina la dirección
+        var dir = (currentState == State.AttackingLeft)
+                  ? PlayerController.DefenseDirection.Left
+                  : PlayerController.DefenseDirection.Right;
 
+        // Comprueba defensa y rango
         bool defended = (player.CurrentDefenseDirection == dir);
-
-        if (!defended && Vector3.Distance(transform.position, player.transform.position) <= attackRange)
-        {
+        float dist = Vector3.Distance(transform.position, player.transform.position);
+        if (!defended && dist <= attackRange)
             AttemptAttack(dir);
-        }
-    }
-    public void OnEnemyAttackEvent(string attackSide)
-    {
-        // flip Left <-> Right
-        string flippedSide = (attackSide == "Left") ? "Right" : "Left";
-
-        if (player != null)
-            player.OnEnemyAttackEvent(flippedSide);
+        else
+            Debug.Log(defended
+                ? "🚫 Bloqueado por defensa"
+                : $"🚶‍♂️ Fuera de rango ({dist:F2} > {attackRange})");
     }
 }

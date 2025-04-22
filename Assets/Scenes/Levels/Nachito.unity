@@ -3687,10 +3687,10 @@ MonoBehaviour:
     probability: 40
     duration: {x: 1, y: 1}
   defenseConfig:
-    probability: 30
+    probability: 60
     duration: {x: 1, y: 1}
   idleConfig:
-    probability: 30
+    probability: 0
     duration: {x: 1, y: 1}
   warningCanvasLeft: {fileID: 1510279568}
   warningCanvasRight: {fileID: 763555837}
