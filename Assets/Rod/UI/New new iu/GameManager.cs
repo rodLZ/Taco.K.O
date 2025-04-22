@@ -8,16 +8,6 @@ public class GameIntro : MonoBehaviour
     public float introDuration = 3f;
     public AudioSource backgroundMusic;
 
-    void Start()
-    {
-        StartCoroutine(ShowIntroPanel());
-        if (backgroundMusic != null && !backgroundMusic.isPlaying)
-        {
-            backgroundMusic.loop = true;
-            backgroundMusic.Play();
-        }
-    }
-
     IEnumerator ShowIntroPanel()
     {
         introPanel.SetActive(true);       // mostrar panel

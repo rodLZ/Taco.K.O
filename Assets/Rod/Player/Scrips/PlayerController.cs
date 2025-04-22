@@ -1,5 +1,4 @@
-﻿// PlayerController.cs
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,8 +32,8 @@ public class PlayerController : MonoBehaviour
     public float minAttackDuration = 0.4f;
 
     [Header("References")]
-    public CanvasGroup panelNegro;
-    public CanvasGroup damageCanvas;
+    public CanvasGroup abilityPanel;    // Panel de la habilidad especial (antes panelNegro)
+    public CanvasGroup damagePanel;     // Panel que indica al jugador que recibió daño
     public Animator animator;
     public Image healthBar;
     public Image[] impactSprites;
@@ -46,32 +45,43 @@ public class PlayerController : MonoBehaviour
     private bool isAttacking = false;
     private bool isDead = false;
     private EnemyAI enemy;
-    private bool isDefendingEvent = false;
-    private DefenseDirection defendingEventDir = DefenseDirection.None;
-    public bool IsDead => isDead;
 
     private int comboCount = 0;
     private float lastAttackTime = -10f;
-    private DefenseDirection lastAttackDirection = DefenseDirection.None;
+    private List<DefenseDirection> fullCombo = new List<DefenseDirection>();
+    private int fireComboIndex = 0;
 
     private List<int> usedSpriteIndices = new List<int>();
     private Image currentSprite;
 
-    public Image[] fireComboSprites; // Asigna los 4 sprites en el Inspector
-    private List<DefenseDirection> fullCombo = new List<DefenseDirection>();
-    private int fireComboIndex = 0;
+    private bool isSpecialActive = false;
+
+    public bool IsDead => isDead;
 
     void Start()
     {
         currentHealth = maxHealth;
         enemy = FindObjectOfType<EnemyAI>();
         UpdateHealthUI();
-
         combatStartTime = Time.time;
-        // Ocultar UIs iniciales
-        if (panelNegro != null) { panelNegro.alpha = 0f; panelNegro.blocksRaycasts = false; panelNegro.interactable = false; }
-        if (damageCanvas != null) { damageCanvas.alpha = 0f; damageCanvas.blocksRaycasts = false; damageCanvas.interactable = false; }
-        foreach (var img in impactSprites) img.gameObject.SetActive(false);
+
+        // Inicializa panels
+        if (abilityPanel != null)
+        {
+            abilityPanel.alpha = 0f;
+            abilityPanel.blocksRaycasts = false;
+            abilityPanel.interactable = false;
+        }
+
+        if (damagePanel != null)
+        {
+            damagePanel.alpha = 0f;
+            damagePanel.blocksRaycasts = false;
+            damagePanel.interactable = false;
+        }
+
+        foreach (var img in impactSprites)
+            img.gameObject.SetActive(false);
     }
 
     void Update()
@@ -86,13 +96,17 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(specialKey))
         {
-            StartCoroutine(FadeCanvas(panelNegro, 1f, 0.3f));
-            panelNegro.blocksRaycasts = true;
+            isSpecialActive = true;
+            StartCoroutine(FadeCanvas(abilityPanel, 1f, 0.3f));
+            abilityPanel.blocksRaycasts = true;
+            abilityPanel.interactable = true;
         }
         else if (Input.GetKeyUp(specialKey))
         {
-            StartCoroutine(FadeCanvas(panelNegro, 0f, 0.3f));
-            panelNegro.blocksRaycasts = false;
+            isSpecialActive = false;
+            StartCoroutine(FadeCanvas(abilityPanel, 0f, 0.3f));
+            abilityPanel.blocksRaycasts = false;
+            abilityPanel.interactable = false;
         }
     }
 
@@ -111,7 +125,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void ProcessCombo(DefenseDirection currentDirection)
+    void ProcessCombo(DefenseDirection dir)
     {
         if (Time.time - lastAttackTime > comboResetTime)
         {
@@ -119,24 +133,12 @@ public class PlayerController : MonoBehaviour
             fullCombo.Clear();
             fireComboIndex = 0;
         }
-        else
-        {
-            comboCount++;
-        }
+        else comboCount++;
 
         lastAttackTime = Time.time;
-        lastAttackDirection = currentDirection;
-        fullCombo.Add(currentDirection);
+        fullCombo.Add(dir);
 
-        // Mostrar sprite de fuego
-        if (fireComboIndex < fireComboSprites.Length)
-        {
-            fireComboSprites[fireComboIndex].gameObject.SetActive(true);
-            StartCoroutine(HideSpriteAfterDelay(fireComboSprites[fireComboIndex], 1f));
-            fireComboIndex++;
-        }
     }
-
 
     void HandleDefenseInput()
     {
@@ -146,102 +148,89 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(PerformDefense("Trigger_D_R", DefenseDirection.Right));
     }
 
-    IEnumerator PerformAttack(string triggerName, DefenseDirection direction)
+    IEnumerator PerformAttack(string triggerName, DefenseDirection dir)
     {
         isAttacking = true;
         animator.speed = 1.5f;
         animator.SetTrigger(triggerName);
 
-        // calcula finalDamage y duración como antes…
+        // Calcula daño final (aquí podrías aplicar combo)
         int finalDamage = attackDamage;
-        // … lógica de combo que actualiza finalDamage …
 
         yield return new WaitForSeconds(attackImpactDelay);
 
-        bool inRange = enemy != null
-                       && Vector3.Distance(transform.position, enemy.transform.position) <= attackRange;
-        bool specialOn = panelNegro != null && panelNegro.alpha > 0.1f;
-        // —> o directamente: bool specialOn = isSpecialActive;
-
-        if (inRange && specialOn)
+        bool inRange = enemy != null && Vector3.Distance(transform.position, enemy.transform.position) <= attackRange;
+        bool canDamage = isSpecialActive && inRange;
+        if (canDamage)
         {
-            // Aplicas daño **una sola vez**, ya con el posible bono de combo
-            enemy.TakeDamage(finalDamage, direction);
+            enemy.TakeDamage(finalDamage, dir);
             ShowRandomImpactSprite();
             audioGolpe?.Play();
         }
 
-        // Espera el resto de la animación
-        yield return new WaitForSeconds((baseAttackDuration /*ajustado por combo*/)
-                                       - attackImpactDelay);
+        // Espera fin de animación ajustada por combo
+        float effectiveDuration = baseAttackDuration;
+        yield return new WaitForSeconds(effectiveDuration - attackImpactDelay);
 
         animator.speed = 1f;
         isAttacking = false;
     }
 
-
-    IEnumerator PerformDefense(string triggerName, DefenseDirection direction)
+    IEnumerator PerformDefense(string triggerName, DefenseDirection dir)
     {
-        CurrentDefenseDirection = direction;
+        // 1) Inicio defensa
+        CurrentDefenseDirection = dir;
         animator.SetTrigger(triggerName);
 
-        // Esperar hasta que la animación actual sea la de defensa
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsTag("Defense"));
+        // 2) Espero a que entre en estado Defense
+        yield return new WaitUntil(() =>
+            animator.GetCurrentAnimatorStateInfo(0).IsTag("Defense"));
 
-        float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(animLength);
+        float defenseDuration = 1.0f; // Lo que dure la animación
+        yield return new WaitForSeconds(defenseDuration);
 
         CurrentDefenseDirection = DefenseDirection.None;
+        Debug.Log("🔓 Defensa finalizada por tiempo");
+
+        // 4) Limpio defensa
+        CurrentDefenseDirection = DefenseDirection.None;
+        Debug.Log("🔓 Defensa finalizada automáticamente");
+        yield return null;
     }
 
-    public void TakeDamage(int damage, DefenseDirection attackDirection)
+    public void TakeDamage(int damage, DefenseDirection attackDir)
     {
-        Debug.Log("TakeDamage called with damage: " + damage);
         if (Time.time - combatStartTime < initialInvulnerabilityDuration) return;
         if (isDead) return;
-        if (attackDirection == lastAttackDirection) return; // Perfect block
+        if (attackDir == CurrentDefenseDirection) return;  // perfect block
 
         currentHealth = Mathf.Clamp(currentHealth - damage, 0f, maxHealth);
         UpdateHealthUI();
-
-        if (panelNegro != null && panelNegro.alpha > 0.1f)
-            StartCoroutine(ShowDamageCanvas(true));
-        else
-            StartCoroutine(ShowDamageCanvas(false));
-        
-        Debug.Log($"TakeDamage invoked. Health now={currentHealth}. Setting Player_D trigger.");
         animator.SetTrigger("Player_D");
+        StartCoroutine(DamageFeedback());
 
         if (currentHealth <= 0) Die();
-        else animator.SetTrigger("Player_D");
     }
 
-    IEnumerator ShowDamageCanvas(bool fade)
+    private IEnumerator DamageFeedback()
     {
-        if (fade)
-            yield return StartCoroutine(FadeCanvas(damageCanvas, 1f, 0.2f));
-        else
-            damageCanvas.alpha = 1f;
-
+        // Muestra el panel de daño con fade in/out
+        yield return StartCoroutine(FadeCanvas(damagePanel, 1f, 0.2f));
         yield return new WaitForSeconds(1.5f);
-
-        if (fade)
-            yield return StartCoroutine(FadeCanvas(damageCanvas, 0f, 0.3f));
-        else
-            damageCanvas.alpha = 0f;
+        yield return StartCoroutine(FadeCanvas(damagePanel, 0f, 0.3f));
     }
 
     void ShowRandomImpactSprite()
     {
         if (impactSprites.Length == 0) return;
         if (usedSpriteIndices.Count >= impactSprites.Length) usedSpriteIndices.Clear();
-        int index;
-        do { index = Random.Range(0, impactSprites.Length); }
-        while (usedSpriteIndices.Contains(index));
-        usedSpriteIndices.Add(index);
+        int idx;
+        do { idx = Random.Range(0, impactSprites.Length); }
+        while (usedSpriteIndices.Contains(idx));
+        usedSpriteIndices.Add(idx);
 
         currentSprite?.gameObject.SetActive(false);
-        currentSprite = impactSprites[index];
+        currentSprite = impactSprites[idx];
         currentSprite.gameObject.SetActive(true);
         StartCoroutine(HideSpriteAfterDelay(currentSprite, 1f));
     }
@@ -256,83 +245,67 @@ public class PlayerController : MonoBehaviour
     {
         isDead = true;
         animator.SetTrigger("Player_Death");
-        if (panelNegro != null) { panelNegro.alpha = 0f; panelNegro.blocksRaycasts = false; panelNegro.interactable = false; }
+        // Ocultar panel de habilidad si está activo
+        if (abilityPanel != null)
+        {
+            abilityPanel.alpha = 0f;
+            abilityPanel.blocksRaycasts = false;
+            abilityPanel.interactable = false;
+        }
     }
 
     void UpdateHealthUI()
     {
-        if (healthBar != null) healthBar.fillAmount = currentHealth / maxHealth;
+        if (healthBar != null)
+            healthBar.fillAmount = currentHealth / maxHealth;
     }
 
     IEnumerator FadeCanvas(CanvasGroup cg, float targetAlpha, float duration)
     {
         if (cg == null) yield break;
-        float startAlpha = cg.alpha, elapsed = 0f;
-        bool willShow = targetAlpha > startAlpha;
-        if (willShow) { cg.blocksRaycasts = true; cg.interactable = true; }
+        float start = cg.alpha, elapsed = 0f;
+        bool showing = targetAlpha > start;
+        if (showing) { cg.blocksRaycasts = true; cg.interactable = true; }
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            cg.alpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / duration);
+            cg.alpha = Mathf.Lerp(start, targetAlpha, elapsed / duration);
             yield return null;
         }
-
         cg.alpha = targetAlpha;
-        if (!willShow) { cg.blocksRaycasts = false; cg.interactable = false; }
+        if (!showing) { cg.blocksRaycasts = false; cg.interactable = false; }
     }
-    // Llamados desde tu animación "defensa izquierda"
     public void DefensaIzquierdaInicio()
     {
-        isDefendingEvent = true;
-        defendingEventDir = DefenseDirection.Left;
-        Debug.Log(">> Defensa IZQUIERDA: inicio");
+        CurrentDefenseDirection = DefenseDirection.Left;
+        Debug.Log("🛡️ Defensa izquierda INICIO");
+        // Aquí puedes hacer cosas si necesitas al inicio de la animación
     }
 
     public void DefensaIzquierdaFinal()
     {
-        isDefendingEvent = false;
-        defendingEventDir = DefenseDirection.None;
-        Debug.Log(">> Defensa IZQUIERDA: final");
+        if (CurrentDefenseDirection == DefenseDirection.Left)
+        {
+            CurrentDefenseDirection = DefenseDirection.None;
+            Debug.Log("🔓 Defensa izquierda FINAL");
+        }
     }
 
-    // (Repite para defensa derecha si la tienes en otra animación)
     public void DefensaDerechaInicio()
     {
-        isDefendingEvent = true;
-        defendingEventDir = DefenseDirection.Right;
-        Debug.Log(">> Defensa DERECHA: inicio");
+        CurrentDefenseDirection = DefenseDirection.Right;
+        Debug.Log("🛡️ Defensa derecha INICIO");
     }
 
     public void DefensaDerechaFinal()
     {
-        isDefendingEvent = false;
-        defendingEventDir = DefenseDirection.None;
-        Debug.Log(">> Defensa DERECHA: final");
-    }
-    public void OnEnemyAttackEvent(string attackSide)
-    {
-        // Convertir a tu enum
-        DefenseDirection attackDir = (attackSide == "Left")
-    ? DefenseDirection.Right
-    : DefenseDirection.Left;
-
-        if (isDefendingEvent)
+        if (CurrentDefenseDirection == DefenseDirection.Right)
         {
-            if (defendingEventDir == attackDir)
-            {
-                Debug.Log("✅ El player se defendió del lado CORRECTO");
-                return; // bloquea el daño
-            }
-            else
-            {
-                Debug.Log("⚠️ El player se defendió del lado INCORRECTO");
-                // aquí podrías aplicar penalización o permitir algo de daño
-            }
+            CurrentDefenseDirection = DefenseDirection.None;
+            Debug.Log("🔓 Defensa derecha FINAL");
         }
-
-        Debug.Log("❌ El player NO se defendió y recibió el golpe");
-        // Si quieres que luego se aplique tu TakeDamage normal, puedes llamarlo:
-        //
     }
+
+
 }

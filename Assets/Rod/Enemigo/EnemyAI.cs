@@ -139,15 +139,16 @@ public class EnemyAI : MonoBehaviour
         yield return new WaitForSeconds(warningDuration);
         InitCanvas(warningCanvas, false);
 
-        // Guarda la dirección para usarla luego en DealDamageFromAnimation
         currentState = (trigger == "Atack_L") ? State.AttackingLeft : State.AttackingRight;
 
         animator.SetTrigger(trigger);
-        yield return null; // Espera un frame para que el Animator entre al estado correcto
-        var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        float animLength = stateInfo.length;
+        yield return null; // espera un frame a que arranque la animación
 
-        // Espera a que termine la animación (debe regresar sola a Idle)
+        // AÑADIDO: reproduce un clip de ataque
+        yield return StartCoroutine(PlayClipRoutine(attackClips, availAttackClips));
+
+        // ahora espera la duración de la animación
+        float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
         yield return new WaitForSeconds(animLength);
     }
 
@@ -163,8 +164,13 @@ public class EnemyAI : MonoBehaviour
     {
         animator.SetTrigger("Idle");
         yield return null;
-        yield return StartCoroutine(PlayClipRoutine(idleClips, availIdleClips));
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+
+        // reproduce inmediatamente
+        StartCoroutine(PlayClipRoutine(idleClips, availIdleClips));
+
+        // y luego espera la animación
+        float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animLength);
     }
 
     private IEnumerator PlayClipRoutine(AudioClip[] array, List<AudioClip> pool)
@@ -216,17 +222,29 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator HandleDeathSequence()
     {
+        // 1) Si está el panelNegro activo, lo oculto rápido
         if (panelNegro != null && panelNegro.alpha > 0f)
             yield return FadeCanvas(panelNegro, 0f, 0.3f);
 
+        // 2) Disparo la animación de muerte
         animator.SetTrigger("Death");
-        yield return new WaitForSeconds(1f);
 
+        // 3) Espero a que el Animator esté en el estado "Death"
+        yield return new WaitUntil(() =>
+            animator.GetCurrentAnimatorStateInfo(0).IsName("Death"));
+
+        // 4) Y luego espero exactamente su duración
+        float deathLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(deathLength);
+
+        // 5) Ahora muestro la pantalla de victoria
         if (victoryCanvas != null)
             yield return FadeCanvas(victoryCanvas, 1f, 0.3f);
 
+        // 6) Destruyo al enemigo al final
         Destroy(gameObject);
     }
+
 
     private IEnumerator FadeCanvas(CanvasGroup cg, float targetAlpha, float duration)
     {
@@ -247,23 +265,19 @@ public class EnemyAI : MonoBehaviour
     }
     public void DealDamageFromAnimation()
     {
-        PlayerController.DefenseDirection dir = (currentState == State.AttackingLeft) ?
-                                                 PlayerController.DefenseDirection.Left :
-                                                 PlayerController.DefenseDirection.Right;
+        // Determina la dirección
+        var dir = (currentState == State.AttackingLeft)
+                  ? PlayerController.DefenseDirection.Left
+                  : PlayerController.DefenseDirection.Right;
 
+        // Comprueba defensa y rango
         bool defended = (player.CurrentDefenseDirection == dir);
-
-        if (!defended && Vector3.Distance(transform.position, player.transform.position) <= attackRange)
-        {
+        float dist = Vector3.Distance(transform.position, player.transform.position);
+        if (!defended && dist <= attackRange)
             AttemptAttack(dir);
-        }
-    }
-    public void OnEnemyAttackEvent(string attackSide)
-    {
-        // flip Left <-> Right
-        string flippedSide = (attackSide == "Left") ? "Right" : "Left";
-
-        if (player != null)
-            player.OnEnemyAttackEvent(flippedSide);
+        else
+            Debug.Log(defended
+                ? "🚫 Bloqueado por defensa"
+                : $"🚶‍♂️ Fuera de rango ({dist:F2} > {attackRange})");
     }
 }
