@@ -979,7 +979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &399084349
 Transform:
   m_ObjectHideFlags: 0
@@ -3681,7 +3681,7 @@ MonoBehaviour:
   attackDamage: 10
   attackRange: 2
   defenseBypassChance: 5
-  maxHealth: 100
+  maxHealth: 200
   defenseDamageReduction: 4
   attackConfig:
     probability: 40
@@ -3692,8 +3692,8 @@ MonoBehaviour:
   idleConfig:
     probability: 30
     duration: {x: 1, y: 1}
-  warningCanvasLeft: {fileID: 763555837}
-  warningCanvasRight: {fileID: 1510279568}
+  warningCanvasLeft: {fileID: 1510279568}
+  warningCanvasRight: {fileID: 763555837}
   warningDuration: 0.5
   healthBar: {fileID: 1922544576}
   animator: {fileID: 1273852355}
@@ -6744,10 +6744,10 @@ MonoBehaviour:
   defendRightKey: 275
   baseAttackDuration: 0.8
   attackImpactDelay: 0.05
-  attackDamage: 10
+  attackDamage: 5
   attackRange: 1.5
   maxHealth: 100
-  initialInvulnerabilityDuration: 5
+  initialInvulnerabilityDuration: 1
   comboResetTime: 1
   comboSpeedFactor: 1
   minAttackDuration: 0.4

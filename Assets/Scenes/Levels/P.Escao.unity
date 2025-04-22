@@ -557,22 +557,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ca874d8139af43bbf4abc3b952238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 17
+  attackDamage: 25
   attackRange: 2
   defenseBypassChance: 8
-  maxHealth: 200
+  maxHealth: 300
   defenseDamageReduction: 0.1
   attackConfig:
-    probability: 60
+    probability: 70
     duration: {x: 1, y: 1}
   defenseConfig:
-    probability: 10
-    duration: {x: 1, y: 1}
-  idleConfig:
     probability: 30
     duration: {x: 1, y: 1}
-  warningCanvasLeft: {fileID: 1697984737}
-  warningCanvasRight: {fileID: 1114824609}
+  idleConfig:
+    probability: 0
+    duration: {x: 1, y: 1}
+  warningCanvasLeft: {fileID: 1114824609}
+  warningCanvasRight: {fileID: 1697984737}
   warningDuration: 0.5
   healthBar: {fileID: 1922544576}
   animator: {fileID: 235507284}
@@ -7110,7 +7110,7 @@ MonoBehaviour:
   attackDamage: 10
   attackRange: 1.5
   maxHealth: 100
-  initialInvulnerabilityDuration: 5
+  initialInvulnerabilityDuration: 1
   comboResetTime: 1
   comboSpeedFactor: 1
   minAttackDuration: 0.4

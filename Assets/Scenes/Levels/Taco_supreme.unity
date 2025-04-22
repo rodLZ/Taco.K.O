@@ -6295,22 +6295,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ca874d8139af43bbf4abc3b952238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 17
-  attackRange: 2
+  attackDamage: 34
+  attackRange: 5
   defenseBypassChance: 5
-  maxHealth: 350
+  maxHealth: 500
   defenseDamageReduction: 0
   attackConfig:
-    probability: 60
+    probability: 80
     duration: {x: 1, y: 1}
   defenseConfig:
     probability: 20
     duration: {x: 1, y: 1}
   idleConfig:
-    probability: 20
+    probability: 0
     duration: {x: 1, y: 1}
-  warningCanvasLeft: {fileID: 1847133092}
-  warningCanvasRight: {fileID: 1061995459}
+  warningCanvasLeft: {fileID: 1061995459}
+  warningCanvasRight: {fileID: 1847133092}
   warningDuration: 0.5
   healthBar: {fileID: 1922544576}
   animator: {fileID: 2120351525}
@@ -6402,6 +6402,7 @@ MonoBehaviour:
   - {fileID: 698718936}
   - {fileID: 1719720199}
   audioGolpe: {fileID: 2095265778}
+  fireComboSprites: []
 --- !u!54 &2138881399
 Rigidbody:
   m_ObjectHideFlags: 0

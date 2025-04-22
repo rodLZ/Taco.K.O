@@ -3361,19 +3361,19 @@ MonoBehaviour:
   attackDamage: 15
   attackRange: 2
   defenseBypassChance: 5
-  maxHealth: 300
+  maxHealth: 350
   defenseDamageReduction: 0.2
   attackConfig:
-    probability: 50
+    probability: 65
     duration: {x: 1, y: 1}
   defenseConfig:
-    probability: 20
+    probability: 35
     duration: {x: 1, y: 1}
   idleConfig:
-    probability: 30
+    probability: 0
     duration: {x: 1, y: 1}
-  warningCanvasLeft: {fileID: 1444885394}
-  warningCanvasRight: {fileID: 2084474173}
+  warningCanvasLeft: {fileID: 2084474173}
+  warningCanvasRight: {fileID: 1444885394}
   warningDuration: 0.5
   healthBar: {fileID: 517505540}
   animator: {fileID: 994765573}
@@ -7369,7 +7369,7 @@ MonoBehaviour:
   attackDamage: 10
   attackRange: 1.5
   maxHealth: 100
-  initialInvulnerabilityDuration: 5
+  initialInvulnerabilityDuration: 1
   comboResetTime: 1
   comboSpeedFactor: 1
   minAttackDuration: 0.4
@@ -7382,6 +7382,7 @@ MonoBehaviour:
   - {fileID: 2138187244}
   - {fileID: 773521306}
   audioGolpe: {fileID: 897364149}
+  fireComboSprites: []
 --- !u!54 &2138881399
 Rigidbody:
   m_ObjectHideFlags: 0

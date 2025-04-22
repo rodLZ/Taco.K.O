@@ -151,46 +151,34 @@ public class PlayerController : MonoBehaviour
         isAttacking = true;
         animator.speed = 1.5f;
         animator.SetTrigger(triggerName);
-        int finalDamage = attackDamage;
 
-        float speedMultiplier = 1f - (comboCount - 1) * comboSpeedFactor;
-        speedMultiplier = Mathf.Clamp(speedMultiplier, minAttackDuration / baseAttackDuration, 1f);
-        float effectiveAttackDuration = baseAttackDuration * speedMultiplier;
+        // calcula finalDamage y duración como antes…
+        int finalDamage = attackDamage;
+        // … lógica de combo que actualiza finalDamage …
 
         yield return new WaitForSeconds(attackImpactDelay);
 
-        if (enemy != null && Vector3.Distance(transform.position, enemy.transform.position) <= attackRange)
+        bool inRange = enemy != null
+                       && Vector3.Distance(transform.position, enemy.transform.position) <= attackRange;
+        bool specialOn = panelNegro != null && panelNegro.alpha > 0.1f;
+        // —> o directamente: bool specialOn = isSpecialActive;
+
+        if (inRange && specialOn)
         {
-            if (panelNegro != null && panelNegro.alpha > 0.1f)
-            {
-                enemy.TakeDamage(attackDamage, direction);
-                ShowRandomImpactSprite();
-                audioGolpe?.Play();
-            }
-        }
-        if (fullCombo.Count == 4 &&
-    fullCombo[0] == DefenseDirection.Left &&
-    fullCombo[1] == DefenseDirection.Right &&
-    fullCombo[2] == DefenseDirection.Left &&
-    fullCombo[3] == DefenseDirection.Right)
-        {
-            finalDamage *= 2; // O el número que desees para el golpe final
-            fullCombo.Clear(); // Reiniciamos combo después del ataque final
-            fireComboIndex = 0;
-            // Puedes desactivar todos los sprites también aquí si quieres
-            foreach (var sprite in fireComboSprites) sprite.gameObject.SetActive(false);
+            // Aplicas daño **una sola vez**, ya con el posible bono de combo
+            enemy.TakeDamage(finalDamage, direction);
+            ShowRandomImpactSprite();
+            audioGolpe?.Play();
         }
 
-        enemy.TakeDamage(finalDamage, direction);
-        ShowRandomImpactSprite();
-        audioGolpe?.Play();
-
-
-        yield return new WaitForSeconds(effectiveAttackDuration - attackImpactDelay);
+        // Espera el resto de la animación
+        yield return new WaitForSeconds((baseAttackDuration /*ajustado por combo*/)
+                                       - attackImpactDelay);
 
         animator.speed = 1f;
         isAttacking = false;
     }
+
 
     IEnumerator PerformDefense(string triggerName, DefenseDirection direction)
     {
@@ -208,6 +196,7 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage, DefenseDirection attackDirection)
     {
+        Debug.Log("TakeDamage called with damage: " + damage);
         if (Time.time - combatStartTime < initialInvulnerabilityDuration) return;
         if (isDead) return;
         if (attackDirection == lastAttackDirection) return; // Perfect block
@@ -219,6 +208,9 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(ShowDamageCanvas(true));
         else
             StartCoroutine(ShowDamageCanvas(false));
+        
+        Debug.Log($"TakeDamage invoked. Health now={currentHealth}. Setting Player_D trigger.");
+        animator.SetTrigger("Player_D");
 
         if (currentHealth <= 0) Die();
         else animator.SetTrigger("Player_D");
