@@ -2355,8 +2355,8 @@ Transform:
   m_GameObject: {fileID: 913584578}
   serializedVersion: 2
   m_LocalRotation: {x: 0.61730546, y: 0.0065287165, z: 0.0051230676, w: 0.7866798}
-  m_LocalPosition: {x: 0.46864343, y: 4.747716, z: -19.697155}
-  m_LocalScale: {x: 3.0747805, y: 1.22991, z: 1.6597899}
+  m_LocalPosition: {x: 1.1, y: 4.76, z: -19.7}
+  m_LocalScale: {x: 3.2921677, y: 1.3168647, z: 1.7771372}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 631092335}
@@ -4087,7 +4087,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1504389795}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Nachitofixed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6760,6 +6760,7 @@ MonoBehaviour:
   - {fileID: 698718936}
   - {fileID: 1719720199}
   audioGolpe: {fileID: 1684894240}
+  fireComboSprites: []
 --- !u!54 &2138881399
 Rigidbody:
   m_ObjectHideFlags: 0
