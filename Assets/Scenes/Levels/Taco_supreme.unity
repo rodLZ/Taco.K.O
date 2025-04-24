@@ -6397,13 +6397,13 @@ MonoBehaviour:
   maxHealth: 500
   defenseDamageReduction: 0
   attackConfig:
-    probability: 75
+    probability: 70
     duration: {x: 1, y: 1}
   defenseConfig:
     probability: 15
     duration: {x: 1, y: 1}
   idleConfig:
-    probability: 10
+    probability: 15
     duration: {x: 1, y: 1}
   warningCanvasLeft: {fileID: 1061995459}
   warningCanvasRight: {fileID: 1847133092}

@@ -378,7 +378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &189114983
 Transform:
   m_ObjectHideFlags: 0
@@ -671,14 +671,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 360272589}
     m_Modifications:
-    - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: a932235687dbf374bae4183f6ca2c7bd, type: 2}
     - target: {fileID: 6091635739451124557, guid: b18d7c73fc18bb3409be7cb65456041d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 0a353b69227e2e243bfb3c53b6d4713c, type: 2}
+    - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a932235687dbf374bae4183f6ca2c7bd, type: 2}
     - target: {fileID: -8679921383154817045, guid: 83cbd11194d490446b245b3a48fcf61a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.818
@@ -3431,10 +3431,10 @@ MonoBehaviour:
     probability: 60
     duration: {x: 1, y: 1}
   defenseConfig:
-    probability: 30
+    probability: 25
     duration: {x: 1, y: 1}
   idleConfig:
-    probability: 10
+    probability: 15
     duration: {x: 1, y: 1}
   warningCanvasLeft: {fileID: 2084474173}
   warningCanvasRight: {fileID: 1444885394}
@@ -6985,14 +6985,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 360272589}
     m_Modifications:
-    - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: a361223432df60a44a9e9c7b41e467a1, type: 2}
     - target: {fileID: 6091635739451124557, guid: b18d7c73fc18bb3409be7cb65456041d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: ba8bfaec60dc2394b8483accc1b9f3cf, type: 2}
+    - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a361223432df60a44a9e9c7b41e467a1, type: 2}
     - target: {fileID: -8679921383154817045, guid: 83cbd11194d490446b245b3a48fcf61a, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.3536

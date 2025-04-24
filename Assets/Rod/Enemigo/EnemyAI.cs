@@ -40,6 +40,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private CanvasGroup panelNegro;
     [SerializeField] private CanvasGroup victoryCanvas;
     [SerializeField] private CanvasGroup defeatCanvas;
+    private bool victoryShown = false;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioSource audioSource;
@@ -216,32 +217,29 @@ public class EnemyAI : MonoBehaviour
 
     private void HandleDeath()
     {
+        if (isDead) return;
         isDead = true;
-        StartCoroutine(HandleDeathSequence());
+        animator.SetTrigger("Death");
+        // ya no arranca corrutina; el resto ocurre en el Animation Event
     }
 
-    private IEnumerator HandleDeathSequence()
+    private void OnDeathAnimationComplete()
     {
-        // 1) Si está el panelNegro activo, lo oculto rápido
-        if (panelNegro != null && panelNegro.alpha > 0f)
-            yield return FadeCanvas(panelNegro, 0f, 0.3f);
+        if (victoryShown) return;
+        victoryShown = true;
 
-        // 2) Disparo la animación de muerte
-        animator.SetTrigger("Death");
-
-        // 3) Espero a que el Animator esté en el estado "Death"
-        yield return new WaitUntil(() =>
-            animator.GetCurrentAnimatorStateInfo(0).IsName("Death"));
-
-        // 4) Y luego espero exactamente su duración
-        float deathLength = animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(deathLength);
-
-        // 5) Ahora muestro la pantalla de victoria
+        Debug.Log("ganaste");
         if (victoryCanvas != null)
-            yield return FadeCanvas(victoryCanvas, 1f, 0.3f);
+            StartCoroutine(FadeCanvas(victoryCanvas, 1f, 0.3f));
 
-        // 6) Destruyo al enemigo al final
+        // Destruye el enemigo al finalizar el fade
+        StartCoroutine(DestroyAfter(victoryCanvas, 0.3f));
+    }
+
+    // 3. Corrutina auxiliar para destruir tras un delay
+    private IEnumerator DestroyAfter(CanvasGroup cg, float delay)
+    {
+        yield return new WaitForSeconds(delay);
         Destroy(gameObject);
     }
 
