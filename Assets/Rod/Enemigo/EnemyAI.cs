@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;  // ← para usar Any()
 
 public class EnemyAI : MonoBehaviour
 {
@@ -55,9 +56,14 @@ public class EnemyAI : MonoBehaviour
 
     private enum State { AttackingLeft, AttackingRight, Defending, Idle }
     private State currentState;
+
     private float currentHealth;
     private bool canAct = true, isDead = false;
     private PlayerController player;
+    private Coroutine aiBehaviorCoroutine;
+
+    // Nombre del trigger que dispara la animación de daño
+    private const string HURT_TRIGGER = "Hirt";
 
     void Start()
     {
@@ -68,6 +74,12 @@ public class EnemyAI : MonoBehaviour
         availDamageClips = new List<AudioClip>(damageClips);
         availIdleClips = new List<AudioClip>(idleClips);
 
+        // Verificar que exista el Trigger "Hirt" en el Animator
+        bool hasHurtParam = animator.parameters
+            .Any(p => p.type == AnimatorControllerParameterType.Trigger && p.name == HURT_TRIGGER);
+        if (!hasHurtParam)
+            Debug.LogWarning($"⚠️ No se encontró el parámetro Trigger '{HURT_TRIGGER}' en el Animator Controller.");
+
         InitCanvas(panelNegro, false);
         InitCanvas(victoryCanvas, false);
         InitCanvas(defeatCanvas, false);
@@ -77,7 +89,7 @@ public class EnemyAI : MonoBehaviour
         currentHealth = maxHealth;
         UpdateHealthVisual();
 
-        StartCoroutine(AIBehaviorLoop());
+        aiBehaviorCoroutine = StartCoroutine(AIBehaviorLoop());
     }
 
     private void InitCanvas(CanvasGroup cg, bool visible)
@@ -93,6 +105,7 @@ public class EnemyAI : MonoBehaviour
         while (!isDead)
         {
             yield return new WaitWhile(() => Time.timeScale == 0f);
+
             if (canAct)
             {
                 canAct = false;
@@ -100,6 +113,7 @@ public class EnemyAI : MonoBehaviour
                 yield return StartCoroutine(ActionRoutine(currentState));
                 canAct = true;
             }
+
             yield return null;
         }
     }
@@ -140,19 +154,15 @@ public class EnemyAI : MonoBehaviour
         yield return new WaitForSeconds(warningDuration);
         InitCanvas(warningCanvas, false);
 
-        currentState = (trigger == "Atack_L") ? State.AttackingLeft : State.AttackingRight;
-
+        currentState = trigger == "Atack_L" ? State.AttackingLeft : State.AttackingRight;
         animator.SetTrigger(trigger);
-        yield return null; // espera un frame a que arranque la animación
+        yield return null;
 
-        // AÑADIDO: reproduce un clip de ataque
         yield return StartCoroutine(PlayClipRoutine(attackClips, availAttackClips));
 
-        // ahora espera la duración de la animación
         float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
         yield return new WaitForSeconds(animLength);
     }
-
 
     private IEnumerator EnemyDefenseRoutine()
     {
@@ -166,23 +176,26 @@ public class EnemyAI : MonoBehaviour
         animator.SetTrigger("Idle");
         yield return null;
 
-        // reproduce inmediatamente
         StartCoroutine(PlayClipRoutine(idleClips, availIdleClips));
 
-        // y luego espera la animación
         float animLength = animator.GetCurrentAnimatorStateInfo(0).length;
         yield return new WaitForSeconds(animLength);
     }
 
     private IEnumerator PlayClipRoutine(AudioClip[] array, List<AudioClip> pool)
     {
-        if (array.Length == 0 || audioSource == null) yield break;
-        if (pool.Count == 0) pool.AddRange(array);
+        if (array.Length == 0 || audioSource == null)
+            yield break;
+
+        if (pool.Count == 0)
+            pool.AddRange(array);
+
         int idx = Random.Range(0, pool.Count);
-        var clip = pool[idx];
+        AudioClip clip = pool[idx];
         pool.RemoveAt(idx);
 
         yield return new WaitWhile(() => audioSource.isPlaying);
+
         audioSource.clip = clip;
         audioSource.Play();
     }
@@ -196,18 +209,63 @@ public class EnemyAI : MonoBehaviour
         if (player.IsDead)
         {
             InitCanvas(defeatCanvas, true);
-            audioSource.PlayOneShot(winClip);
+            if (!audioSource.isPlaying && winClip != null)
+                audioSource.PlayOneShot(winClip);
         }
     }
 
     public void TakeDamage(int damage, PlayerController.DefenseDirection attackDir)
     {
         if (isDead) return;
+
         StartCoroutine(PlayClipRoutine(damageClips, availDamageClips));
         currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
         UpdateHealthVisual();
-        if (currentHealth <= 0) HandleDeath();
+
+        if (currentHealth <= 0)
+        {
+            HandleDeath();
+        }
+        else
+        {
+            if (currentState == State.Idle)
+                StartCoroutine(HurtRoutine());
+        }
     }
+
+
+    private IEnumerator HurtRoutine()
+    {
+        // 1) Detén el loop de IA actual
+        if (aiBehaviorCoroutine != null)
+            StopCoroutine(aiBehaviorCoroutine);
+
+        // 2) Dispara el trigger de Hirt
+        animator.ResetTrigger(HURT_TRIGGER);
+        animator.SetTrigger(HURT_TRIGGER);
+
+        // 3) Calcula la duración de la animación Hirt
+        float hirtLength = 0f;
+        foreach (var clip in animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == HURT_TRIGGER)
+            {
+                hirtLength = clip.length;
+                break;
+            }
+        }
+        if (hirtLength <= 0f) hirtLength = 0.5f; // fallback
+
+        // 4) Espera a que termine Hirt
+        yield return new WaitForSeconds(hirtLength);
+
+        // 5) Asegura que la IA pueda actuar
+        canAct = true;
+
+        // 6) Reinicia el loop de IA para que elija su siguiente acción
+        aiBehaviorCoroutine = StartCoroutine(AIBehaviorLoop());
+    }
+
 
     private void UpdateHealthVisual()
     {
@@ -220,29 +278,24 @@ public class EnemyAI : MonoBehaviour
         if (isDead) return;
         isDead = true;
         animator.SetTrigger("Death");
-        // ya no arranca corrutina; el resto ocurre en el Animation Event
     }
 
+    // Llamado por Animation Event al final de Death
     private void OnDeathAnimationComplete()
     {
         if (victoryShown) return;
         victoryShown = true;
 
-        Debug.Log("ganaste");
         if (victoryCanvas != null)
             StartCoroutine(FadeCanvas(victoryCanvas, 1f, 0.3f));
-
-        // Destruye el enemigo al finalizar el fade
         StartCoroutine(DestroyAfter(victoryCanvas, 0.3f));
     }
 
-    // 3. Corrutina auxiliar para destruir tras un delay
     private IEnumerator DestroyAfter(CanvasGroup cg, float delay)
     {
         yield return new WaitForSeconds(delay);
         Destroy(gameObject);
     }
-
 
     private IEnumerator FadeCanvas(CanvasGroup cg, float targetAlpha, float duration)
     {
@@ -261,15 +314,15 @@ public class EnemyAI : MonoBehaviour
         cg.alpha = targetAlpha;
         if (!willShow) { cg.blocksRaycasts = false; cg.interactable = false; }
     }
+
+    // Enlace para Animation Event al impactar
     public void DealDamageFromAnimation()
     {
-        // Determina la dirección
-        var dir = (currentState == State.AttackingLeft)
+        var dir = currentState == State.AttackingLeft
                   ? PlayerController.DefenseDirection.Left
                   : PlayerController.DefenseDirection.Right;
 
-        // Comprueba defensa y rango
-        bool defended = (player.CurrentDefenseDirection == dir);
+        bool defended = player.CurrentDefenseDirection == dir;
         float dist = Vector3.Distance(transform.position, player.transform.position);
         if (!defended && dist <= attackRange)
             AttemptAttack(dir);
