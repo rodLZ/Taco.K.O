@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menu/Menu.unity
     guid: 94c0a04678d151440848e9e9a6ea8fa9
-  - enabled: 1
+  - enabled: 0
     path: Assets/TUTOINSANEEE/TUTOINSANE.unity
     guid: c2d7e3b10a115544a87fc1dcefa3377c
   - enabled: 1

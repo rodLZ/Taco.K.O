@@ -687,28 +687,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ca874d8139af43bbf4abc3b952238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitsToTriggerDefense: 4
+  hitWindowDuration: 2
   attackDamage: 25
   attackRange: 5
   defenseBypassChance: 2
   maxHealth: 300
-  defenseDamageReduction: 0.1
   attackConfig:
     probability: 65
-    duration: {x: 1, y: 1}
   defenseConfig:
     probability: 20
-    duration: {x: 1, y: 1}
   idleConfig:
     probability: 15
-    duration: {x: 1, y: 1}
   warningCanvasLeft: {fileID: 1114824609}
   warningCanvasRight: {fileID: 1697984737}
-  warningDuration: 0.5
-  healthBar: {fileID: 1922544576}
-  animator: {fileID: 235507284}
   panelNegro: {fileID: 1069117926}
   victoryCanvas: {fileID: 2147191192}
   defeatCanvas: {fileID: 522491790}
+  healthBar: {fileID: 1922544576}
   audioSource: {fileID: 803788747}
   attackClips:
   - {fileID: 8300000, guid: 3cc1915c13a9e244db58ec90b2e78cbf, type: 3}
@@ -725,6 +721,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 2d31db8e2b9372e47ad9b396174ef262, type: 3}
   - {fileID: 8300000, guid: a0f344a88b5d5134b8f361debb6cb98f, type: 3}
   winClip: {fileID: 8300000, guid: 8c886c3eaa13cac49a3421b3ba4aaa6d, type: 3}
+  animator: {fileID: 235507284}
+  actionCooldown: 0.05
 --- !u!54 &235507286
 Rigidbody:
   m_ObjectHideFlags: 0

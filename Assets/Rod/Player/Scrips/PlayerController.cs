@@ -142,11 +142,14 @@ public class PlayerController : MonoBehaviour
 
     void HandleDefenseInput()
     {
+        if (isSpecialActive) return; // 🚫 No permitir defensa si la habilidad especial está activa
+
         if (Input.GetKeyDown(defendLeftKey))
             StartCoroutine(PerformDefense("Trigger_D_L", DefenseDirection.Left));
         else if (Input.GetKeyDown(defendRightKey))
             StartCoroutine(PerformDefense("Trigger_D_R", DefenseDirection.Right));
     }
+
 
     IEnumerator PerformAttack(string triggerName, DefenseDirection dir)
     {

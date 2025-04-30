@@ -1153,7 +1153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 183.74707, y: -504.11142}
+  m_AnchoredPosition: {x: 183.74707, y: -617}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &882631443
@@ -1313,14 +1313,14 @@ RectTransform:
   m_GameObject: {fileID: 950332284}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -19.286104}
-  m_LocalScale: {x: 3.12829, y: 3.12829, z: 3.12829}
+  m_LocalScale: {x: 2.9255142, y: 2.9255142, z: 2.9255142}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 439937493}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -466.65295, y: -189.71138}
+  m_AnchoredPosition: {x: -319, y: -189.71138}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &950332286
@@ -1343,8 +1343,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "EL taco no le gusta pelear asi que ponte la bandana para poder da\xF1ar
-    a tu rival\n\n"
+  m_text: Puedes herir a tu enemigo sin verlo... pero en la oscuridad, quien no ve,
+    tampoco se protege.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 816ef1eb72d8d324db96eaa2d9a56aa8, type: 2}
   m_sharedMaterial: {fileID: 1727984940063663869, guid: 816ef1eb72d8d324db96eaa2d9a56aa8, type: 2}
@@ -1371,8 +1371,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1457,7 +1457,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 836.5471, y: 235.08862}
+  m_AnchoredPosition: {x: 780, y: 235.08862}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &951366709
@@ -1864,7 +1864,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -394.653, y: 446.28857}
+  m_AnchoredPosition: {x: -310, y: 446.28857}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1258103580
@@ -2284,7 +2284,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.2364375, y: 0.58500004}
   m_AnchorMax: {x: 0.2364375, y: 0.58500004}
-  m_AnchoredPosition: {x: 39, y: -871}
+  m_AnchoredPosition: {x: 39, y: -897}
   m_SizeDelta: {x: 144.6117, y: 81.2784}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1784879878

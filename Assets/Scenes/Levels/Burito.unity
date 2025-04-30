@@ -671,10 +671,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 360272589}
     m_Modifications:
-    - target: {fileID: 6091635739451124557, guid: b18d7c73fc18bb3409be7cb65456041d, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 0a353b69227e2e243bfb3c53b6d4713c, type: 2}
     - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -727,6 +723,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Super_burrito_capa (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6091635739451124557, guid: b18d7c73fc18bb3409be7cb65456041d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0a353b69227e2e243bfb3c53b6d4713c, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3422,28 +3422,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ca874d8139af43bbf4abc3b952238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitsToTriggerDefense: 2
+  hitWindowDuration: 2
   attackDamage: 15
   attackRange: 5
   defenseBypassChance: 5
   maxHealth: 350
-  defenseDamageReduction: 0.2
   attackConfig:
     probability: 60
-    duration: {x: 1, y: 1}
   defenseConfig:
     probability: 25
-    duration: {x: 1, y: 1}
   idleConfig:
     probability: 15
-    duration: {x: 1, y: 1}
   warningCanvasLeft: {fileID: 2084474173}
   warningCanvasRight: {fileID: 1444885394}
-  warningDuration: 0.5
-  healthBar: {fileID: 517505540}
-  animator: {fileID: 994765573}
   panelNegro: {fileID: 1126241061}
   victoryCanvas: {fileID: 291830072}
   defeatCanvas: {fileID: 402614012}
+  healthBar: {fileID: 517505540}
   audioSource: {fileID: 803788747}
   attackClips:
   - {fileID: 8300000, guid: 05ee439f2f9fabe4b872baafcfebdcf5, type: 3}
@@ -3463,6 +3459,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d344fe659e5670749bc4af10719b1527, type: 3}
   - {fileID: 8300000, guid: a7c3eb394c2ad754f950e1e241caa87c, type: 3}
   winClip: {fileID: 8300000, guid: c616b0c323f2aa444987fb2d1094e101, type: 3}
+  animator: {fileID: 994765573}
+  actionCooldown: 0.15
 --- !u!54 &994765576
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6985,10 +6983,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 360272589}
     m_Modifications:
-    - target: {fileID: 6091635739451124557, guid: b18d7c73fc18bb3409be7cb65456041d, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: ba8bfaec60dc2394b8483accc1b9f3cf, type: 2}
     - target: {fileID: 8810465351989208907, guid: b1deadc89ea22034d9dd82c78e06619d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -7053,6 +7047,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Super_burrito_capa
       objectReference: {fileID: 0}
+    - target: {fileID: 6091635739451124557, guid: b18d7c73fc18bb3409be7cb65456041d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ba8bfaec60dc2394b8483accc1b9f3cf, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -5168,6 +5168,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1808015891}
   m_CullTransparentMesh: 1
+--- !u!1 &1809486594
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1809486595}
+  - component: {fileID: 1809486597}
+  - component: {fileID: 1809486596}
+  m_Layer: 5
+  m_Name: furia
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1809486595
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809486594}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 3.4803822, y: 3.480383, z: 3.4803822}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2145790244}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 794, y: 463}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1809486596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809486594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 60ae6bf0033da2040bd095893ab4e1d7, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1809486597
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809486594}
+  m_CullTransparentMesh: 1
 --- !u!1 &1836218687
 GameObject:
   m_ObjectHideFlags: 0
@@ -6391,28 +6466,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3ca874d8139af43bbf4abc3b952238, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitsToTriggerDefense: 3
+  hitWindowDuration: 2
   attackDamage: 34
   attackRange: 5
   defenseBypassChance: 5
   maxHealth: 500
-  defenseDamageReduction: 0
   attackConfig:
     probability: 70
-    duration: {x: 1, y: 1}
   defenseConfig:
     probability: 15
-    duration: {x: 1, y: 1}
   idleConfig:
     probability: 15
-    duration: {x: 1, y: 1}
   warningCanvasLeft: {fileID: 1061995459}
   warningCanvasRight: {fileID: 1847133092}
-  warningDuration: 0.5
-  healthBar: {fileID: 1922544576}
-  animator: {fileID: 2120351525}
   panelNegro: {fileID: 1069117926}
   victoryCanvas: {fileID: 960312321}
   defeatCanvas: {fileID: 524374893}
+  healthBar: {fileID: 1922544576}
   audioSource: {fileID: 803788747}
   attackClips:
   - {fileID: 8300000, guid: 328e195fd82e4644baec8c340ed7411d, type: 3}
@@ -6431,6 +6502,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5ed8380e9ce3a8d43973dbc46fb1c375, type: 3}
   - {fileID: 8300000, guid: 4c3a2582e17dfa44d9c9e713e782886b, type: 3}
   winClip: {fileID: 8300000, guid: 23823f74a0ee92c42a6ab5743cf6b76e, type: 3}
+  animator: {fileID: 2120351525}
+  actionCooldown: 0.1
 --- !u!1 &2138881395 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6c8da82769b665e41b9a1d7cbc2da10d, type: 3}
@@ -6485,7 +6558,7 @@ MonoBehaviour:
   attackDamage: 10
   attackRange: 1.5
   maxHealth: 100
-  initialInvulnerabilityDuration: 3
+  initialInvulnerabilityDuration: 1
   comboResetTime: 1
   comboSpeedFactor: 1
   minAttackDuration: 0.4
@@ -6577,6 +6650,7 @@ RectTransform:
   - {fileID: 191356990}
   - {fileID: 1922544575}
   - {fileID: 1903904527}
+  - {fileID: 1809486595}
   - {fileID: 710657488}
   m_Father: {fileID: 1686026252}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
